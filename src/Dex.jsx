@@ -27,8 +27,10 @@ const Dex = ({ results }) => {
         Type 2
         <select 
         id="type2"
+        disabled={!selectedType1 || selectedType1 === ''}
         value={selectedType2}
-        onChange={ e => setType2(e.target.value)}>
+        onChange={ e => setType2(e.target.value)}
+        >
           <option />
           {results.map((result) => (
             <option key={result.name}>{result.name}</option>
@@ -41,9 +43,9 @@ const Dex = ({ results }) => {
 
       <div>
         <ul>
-          { pokemonList.map(pokemon => (
+          { pokemonList ? pokemonList.map(pokemon => (
             <li key={pokemon.pokemon.name}>{pokemon.pokemon.name}</li>
-          ))}
+          )): 'No pokemon yet'}
         </ul>
       </div>
     </div>

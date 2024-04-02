@@ -3,33 +3,69 @@ import { useEffect, useState } from "react";
 const BASE_URL = 'https://pokeapi.co/api/v2/type';
 
 const localCache = {};
+let pokemonList1 = [];
+let pokemonList2 = [];
 
 export default function usePokemonList(type1, type2) {
   const [pokemonList, setPokemonList] = useState([]);
   const [status, setStatus] = useState("unloaded");
 
   useEffect(() => {
+    // Type 1 Checking
     if(!type1) {
-      setPokemonList([]);
+      // setPokemonList([]);
+      pokemonList1 = [];
     } else if(localCache[type1]) {
-      setPokemonList(localCache[type1]);
+      // setPokemonList(localCache[type1]);
+      pokemonList1 = localCache[type1];
     } else {
-      requestPokemonList();
+      queryPokemonByType(type1, 1);
     }
 
-    async function requestPokemonList() {
-      setPokemonList([]);
-      setStatus("loading");
-
-      console.log(type1);
-      console.log(type2);
-
-      const res = await fetch(`${BASE_URL}/${type1}`);
-      const json = await res.json();
-      localCache[type1] = json.pokemon;
-
-      setPokemonList(localCache[type1])
+    // Type 2 Checking
+    if(!type2) {
+      // setPokemonList([]);
+      pokemonList2 = [];
+    } else if(localCache[type2]) {
+      // setPokemonList(localCache[type1]);
+      pokemonList2 = localCache[type2];
+      const combinedList = intersection(pokemonList1, pokemonList2);
       setStatus('loaded');
+      setPokemonList(combinedList)
+    } else {
+      queryPokemonByType(type2, 2);
+    }
+
+    async function queryPokemonByType(type, listNumber) {
+      setStatus('loading');
+      const res = await fetch(`${BASE_URL}/${type}`);
+      const json = await res.json();
+      
+      localCache[type] = json.pokemon;
+      listNumber === 1 ? pokemonList1 = localCache[type] : pokemonList2 = localCache[type];
+
+      setPokemonList([]);
+      const combinedList = intersection(pokemonList1, pokemonList2);
+      setStatus('loaded');
+      setPokemonList(combinedList)
+    }
+
+    function intersection(list1, list2) {
+      if (!list2 || list2.length === 0) {
+        return list1;
+      }
+
+      const resList = [];
+      list1.forEach(item => {
+        const newList = list2.filter(listItem => listItem.pokemon.name === item.pokemon.name);
+        console.log(newList[0]);
+        if (newList[0]) {
+          resList.push(newList[0]);
+        }
+        
+      });
+      console.log(resList);
+      return resList;
     }
 
   }, [type1, type2])
