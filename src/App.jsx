@@ -1,10 +1,12 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import Dex from "./Dex";
 
 const App = () => {
   return (
     <div className="container">
-      <h1>Pokemon Search</h1>
+      <h1>Pokedéx Beta</h1>
+      <Dex/>
     </div>
   );
 };
