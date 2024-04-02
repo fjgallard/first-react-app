@@ -1,11 +1,14 @@
 import { useState } from "react";
+import usePokemonList from "./usePokemonList";
 
 const Dex = ({ results }) => {
   const [selectedType1, setType1] = useState("");
   const [selectedType2, setType2] = useState("");
+  const [pokemonList] = usePokemonList(selectedType1, selectedType2);
 
   return (
-    <form>
+    <div>
+      <form>
 
       <label htmlFor="type">
         Type 1
@@ -34,7 +37,17 @@ const Dex = ({ results }) => {
       </label>
 
       <button>Submit</button>
-    </form>
+      </form>
+
+      <div>
+        <ul>
+          { pokemonList.map(pokemon => (
+            <li key={pokemon.pokemon.name}>{pokemon.pokemon.name}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    
   );
 }
 
