@@ -13,24 +13,21 @@ export default function usePokemonList(type1, type2) {
   useEffect(() => {
     // Type 1 Checking
     if(!type1) {
-      // setPokemonList([]);
       pokemonList1 = [];
     } else if(localCache[type1]) {
-      // setPokemonList(localCache[type1]);
       pokemonList1 = localCache[type1];
+      const combinedList = intersection(pokemonList1, pokemonList2);
+      setPokemonList(combinedList)
     } else {
       queryPokemonByType(type1, 1);
     }
 
     // Type 2 Checking
     if(!type2) {
-      // setPokemonList([]);
       pokemonList2 = [];
     } else if(localCache[type2]) {
-      // setPokemonList(localCache[type1]);
       pokemonList2 = localCache[type2];
       const combinedList = intersection(pokemonList1, pokemonList2);
-      setStatus('loaded');
       setPokemonList(combinedList)
     } else {
       queryPokemonByType(type2, 2);
@@ -58,13 +55,11 @@ export default function usePokemonList(type1, type2) {
       const resList = [];
       list1.forEach(item => {
         const newList = list2.filter(listItem => listItem.pokemon.name === item.pokemon.name);
-        console.log(newList[0]);
         if (newList[0]) {
           resList.push(newList[0]);
         }
         
       });
-      console.log(resList);
       return resList;
     }
 
